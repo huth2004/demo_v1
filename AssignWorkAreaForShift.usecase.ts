@@ -79,7 +79,7 @@ export class AssignWorkAreaForShiftUseCase {
     );
 
     // 8. Check overlapping shifts
-    shifts.some((shift) => {
+    const isConflictShift = shifts.some((shift) => {
       const shiftPeriod: Period = {
         startDate: shift.startDate,
         endDate: shift.endDate,
@@ -90,6 +90,12 @@ export class AssignWorkAreaForShiftUseCase {
         isOverlap(assignShiftPeriod, shiftPeriod)
       );
     });
+
+    if (isConflictShift) {
+      throw new Error(
+        "The selected work area is already assigned to another shift during this period",
+      );
+    }
 
     // 9. Update shift
     const updatedShift: Shift = {
